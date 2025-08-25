@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#12070c"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>I love you Farida — IGNITE</title>
+  <style>
+    :root{
+      --bg:#12070c;
+      --bg2:#1a0f14;
+      --text:#fff;
+      --muted:#c7a8b3;
+      --peach:#ffb3c7;
+      --radius:22px;
+      --shadow:0 12px 32px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;height:100%}
+    body{
+      background:
+        radial-gradient(900px 540px at -10% -10%, rgba(255,77,134,.10), transparent 55%),
+        radial-gradient(900px 540px at 110% 110%, rgba(255,179,199,.08), transparent 55%),
+        linear-gradient(180deg,#0e0408,var(--bg));
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Inter,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+      -webkit-text-size-adjust:100%;
+    }
+
+    .wrap{
+      min-height:100dvh; display:grid; place-items:center;
+      padding:calc(env(safe-area-inset-top,0) + 16px) 16px calc(env(safe-area-inset-bottom,0) + 16px);
+    }
+    .card{
+      width:100%; max-width:700px; background:var(--bg2); border-radius:var(--radius);
+      border:1px solid rgba(255,255,255,.06); box-shadow:var(--shadow); overflow:hidden;
+    }
+    header{
+      display:flex; gap:12px; align-items:center; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,.06);
+      background: radial-gradient(700px 260px at -10% -20%, rgba(255,77,134,.18), transparent 60%);
+    }
+    .emoji{
+      width:42px; height:42px; display:grid; place-items:center; border-radius:12px;
+      background:rgba(255,255,255,.06); box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+      animation:float 4s ease-in-out infinite;
+    }
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+    h1{margin:0;font-size:18px}
+    .muted{color:var(--muted);font-size:12px}
+
+    .stage{
+      position:relative; background:#070408; min-height:54dvh; display:grid; place-items:center; padding:16px 12px; overflow:hidden;
+    }
+    .controls,.footer{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 16px;
+    }
+    .brand{display:inline-flex; align-items:center; gap:8px; color:var(--muted); font-size:12px}
+    .dot{width:6px; height:6px; border-radius:6px; background:var(--peach); box-shadow:0 0 12px var(--peach)}
+
+    /* Button */
+    .btn{
+      appearance:none; cursor:pointer; font-weight:800; letter-spacing:.2px;
+      padding:12px 16px; border-radius:14px; border:1px solid rgba(255,255,255,.10);
+      background:linear-gradient(180deg, rgba(255,179,199,.22), rgba(255,77,134,.32));
+      color:var(--text); box-shadow:0 6px 20px rgba(255,77,134,.22);
+      transition:transform .15s ease, filter .2s ease;
+    }
+    .btn:active{transform:translateY(1px) scale(.99)}
+    .btn:hover{filter:brightness(1.05)}
+
+    /* FRAMES */
+    .frame{
+      position:absolute; inset:0; display:grid; place-items:center; opacity:0; transform:scale(1.02) translateY(10px);
+      transition:opacity .7s ease, transform .7s ease;
+    }
+    .frame.show{ opacity:1; transform:scale(1) translateY(0) }
+    .line{ display:flex; align-items:baseline; gap:min(4vw,16px); flex-wrap:wrap; justify-content:center; text-align:center; }
+
+    /* Words / Letters */
+    .word{ display:inline-flex; gap:.02em; position:relative; }
+    .letter{
+      display:inline-block; font-weight:900; line-height:1;
+      font-size:clamp(44px,14.5vw,104px);
+      letter-spacing:.02em; opacity:0; transform:translateY(24px) scale(.94);
+
+      /* Fallback plain color if gradient-clip unsupported */
+      color:#fff;
+
+      /* Gradient text with iOS support */
+      background:linear-gradient(180deg,#ffffff,#fffafc);
+      -webkit-background-clip:text;
+               background-clip:text;
+      -webkit-text-fill-color:transparent;
+
+      text-shadow:none;
+      animation:popInSmooth .95s cubic-bezier(.2,.9,.2,1) forwards;
+      animation-delay:calc(var(--d,0s) + var(--i,0) * .12s);
+      will-change:transform,opacity;
+    }
+    @keyframes popInSmooth{
+      0%{opacity:0; transform:translateY(24px) scale(.94)}
+      55%{opacity:1; transform:translateY(-6px) scale(1.06)}
+      100%{opacity:1; transform:translateY(0) scale(1)}
+    }
+
+    /* Heart */
+    .heart{
+      width:clamp(30px,8vw,56px); height:clamp(30px,8vw,56px);
+      border-radius:7px; transform:rotate(45deg);
+      background:linear-gradient(135deg,#5a0000,#7a0000);
+      position:relative; margin-inline:clamp(6px,1.8vw,14px);
+      box-shadow:0 8px 18px rgba(255,0,0,.26);
+    }
+    .heart::before,.heart::after{content:""; position:absolute; width:100%; height:100%; border-radius:50%; background:inherit;}
+    .heart::before{left:-50%; top:0} .heart::after{left:0; top:-50%}
+
+    .heart.ignite{
+      animation:
+        ignite 1.25s ease-out forwards,
+        beat 1.15s ease-in-out 1.25s infinite;
+    }
+    @keyframes ignite{
+      0%{background:linear-gradient(135deg,#3c0000,#5a0000); box-shadow:0 0 0 rgba(255,0,0,0); transform:rotate(45deg) scale(.9); filter:brightness(.7) saturate(.9)}
+      45%{background:linear-gradient(135deg,#cc0000,#ff1a1a); box-shadow:0 0 24px #ff2626, 0 0 60px rgba(255,20,20,.55); transform:rotate(45deg) scale(1.33); filter:brightness(1.2) saturate(1.3)}
+      100%{background:linear-gradient(135deg,#e60000,#ff3333); box-shadow:0 0 18px #ff2e2e; transform:rotate(45deg) scale(1); filter:brightness(1) saturate(1)}
+    }
+    @keyframes beat{0%,100%{transform:rotate(45deg) scale(1)} 30%{transform:rotate(45deg) scale(1.2)} 60%{transform:rotate(45deg) scale(.98)}}
+
+    /* Particles */
+    .particles{position:absolute; inset:0; overflow:hidden; pointer-events:none}
+    .p{
+      --dur:2.4s;
+      position:absolute; bottom:-18px; width:12px; height:12px; transform:rotate(45deg);
+      background:linear-gradient(135deg,#5a0000,#7a0000);
+      border-radius:3px; opacity:0;
+      animation:floatUp var(--dur) linear forwards, redden var(--dur) ease-in forwards;
+      filter:drop-shadow(0 0 8px rgba(255,0,0,.3));
+    }
+    .p::before,.p::after{content:""; position:absolute; width:12px; height:12px; background:inherit; border-radius:50%}
+    .p::before{left:-6px; top:0} .p::after{left:0; top:-6px}
+    @keyframes floatUp{
+      0%{transform:translateY(0) rotate(45deg) scale(.82); opacity:0}
+      12%{opacity:.95} 88%{opacity:.95}
+      100%{transform:translateY(-108vh) rotate(45deg) scale(1.08); opacity:0}
+    }
+    @keyframes redden{
+      0%{background:linear-gradient(135deg,#4a0000,#6b0000)}
+      50%{background:linear-gradient(135deg,#d10000,#ff1a1a)}
+      100%{background:linear-gradient(135deg,#ff1a1a,#ff4d4d)}
+    }
+
+    /* Ignite flash overlay */
+    .flash{
+      position:absolute; inset:0; pointer-events:none;
+      background:radial-gradient(600px 300px at 50% 55%, rgba(255,50,50,.35), rgba(255,50,50,0) 60%);
+      animation:flashFade .6s ease-out forwards;
+    }
+    @keyframes flashFade{from{opacity:.9} to{opacity:0}}
+
+    @media (min-width:720px){
+      h1{font-size:20px}
+      .stage{min-height:56dvh}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card" aria-label="Love card">
+      <header>
+        <div class="emoji" aria-hidden="true">❤️</div>
+        <div>
+          <h1>I love you, Farida</h1>
+          <div class="muted">Мен сені сүйемін</div>
+        </div>
+      </header>
+
+      <div class="stage" id="stage">
+        <div class="particles" id="particles" aria-hidden="true"></div>
+
+        <!-- FRAME 1 -->
+        <div class="frame" id="f1" role="group" aria-label="I love you Farida">
+          <div class="line">
+            <span class="word"><span class="letter" style="--i:0">I</span></span>
+            <span class="word" style="--d:.1s">
+              <span class="letter" style="--i:0">l</span><span class="letter" style="--i:1">o</span><span class="letter" style="--i:2">v</span><span class="letter" style="--i:3">e</span>
+            </span>
+            <span class="word" style="--d:.6s">
+              <span class="letter" style="--i:0">y</span><span class="letter" style="--i:1">o</span><span class="letter" style="--i:2">u</span>
+            </span>
+            <span class="word" style="--d:1.0s">
+              <span class="letter" style="--i:0">F</span><span class="letter" style="--i:1">a</span><span class="letter" style="--i:2">r</span><span class="letter" style="--i:3">i</span><span class="letter" style="--i:4">d</span><span class="letter" style="--i:5">a</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- FRAME 2 -->
+        <div class="frame" id="f2" role="group" aria-label="I heart YOU Farida">
+          <div class="line">
+            <span class="word"><span class="letter" style="--i:0">I</span></span>
+            <span class="heart" aria-hidden="true"></span>
+            <span class="word" style="--d:.3s">
+              <span class="letter" style="--i:0">Y</span><span class="letter" style="--i:1">O</span><span class="letter" style="--i:2">U</span>
+            </span>
+            <span class="word" style="--d:.9s">
+              <span class="letter" style="--i:0">F</span><span class="letter" style="--i:1">a</span><span class="letter" style="--i:2">r</span><span class="letter" style="--i:3">i</span><span class="letter" style="--i:4">d</span><span class="letter" style="--i:5">a</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- FRAME 3 -->
+        <div class="frame" id="f3" role="group" aria-label="I heart U Farida">
+          <div class="line">
+            <span class="word"><span class="letter" style="--i:0">I</span></span>
+            <span class="heart" aria-hidden="true"></span>
+            <span class="word" style="--d:.3s"><span class="letter" style="--i:0">U</span></span>
+            <span class="word" style="--d:.8s">
+              <span class="letter" style="--i:0">F</span><span class="letter" style="--i:1">a</span><span class="letter" style="--i:2">r</span><span class="letter" style="--i:3">i</span><span class="letter" style="--i:4">d</span><span class="letter" style="--i:5">a</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- FRAME 4 -->
+        <div class="frame" id="f4" role="group" aria-label="Farida heart">
+          <div class="line">
+            <span class="word">
+              <span class="letter" style="--i:0">F</span><span class="letter" style="--i:1">a</span><span class="letter" style="--i:2">r</span><span class="letter" style="--i:3">i</span><span class="letter" style="--i:4">d</span><span class="letter" style="--i:5">a</span>
+            </span>
+            <span class="heart" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="replayBtn" aria-label="Replay">▶ Повторить</button>
+        <span class="muted">By Nurbek</span>
+      </div>
+
+      <div class="footer">
+        <span class="brand"><span class="dot"></span> with ❤️</span>
+        <span class="muted" aria-hidden="true">🥵🥵🥵🥵🥵🥵🥵🥵🥵</span>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      const frames = ['f1','f2','f3','f4'].map(id => document.getElementById(id));
+      const replayBtn = document.getElementById('replayBtn');
+      const particles = document.getElementById('particles');
+      const stage = document.getElementById('stage');
+      const STEP_MS = 2800;
+
+      let timer = null;
+      let idx = 0;
+
+      /** Force-restart CSS animations (incl. iOS Safari) */
+      function restartAnimation(el) {
+        el.style.animation = 'none';
+        el.style.webkitAnimation = 'none';
+        // Force reflow
+        void el.offsetHeight;
+        el.style.animation = '';
+        el.style.webkitAnimation = '';
+      }
+
+      function showFrame(i){
+        frames.forEach((f,k)=> f.classList.toggle('show', k === i));
+
+        const letters = frames[i].querySelectorAll('.letter');
+        letters.forEach(restartAnimation);
+
+        const hearts = frames[i].querySelectorAll('.heart');
+        hearts.forEach(h=>{
+          h.classList.remove('ignite');
+          void h.offsetWidth;
+          h.classList.add('ignite');
+        });
+
+        burstParticles();
+        if (hearts.length){ igniteBurst(); flash(); }
+      }
+
+      function burstParticles(durationMs=1400){
+        const start = performance.now();
+        const w = particles.clientWidth || window.innerWidth;
+        function spawn(){
+          if (performance.now() - start > durationMs) return;
+          const el = document.createElement('div');
+          el.className = 'p';
+          const size = 10 + Math.random()*18;
+          el.style.width = size + 'px';
+          el.style.height = size + 'px';
+          el.style.left = (Math.random() * w) + 'px';
+          el.style.setProperty('--dur', (2.0 + Math.random()*1.8) + 's');
+          particles.appendChild(el);
+          setTimeout(spawn, 80 + Math.random()*120);
+        }
+        spawn();
+      }
+
+      function igniteBurst(durationMs=900){
+        const start = performance.now();
+        const w = particles.clientWidth || window.innerWidth;
+        const center = w * 0.5;
+        function spawn(){
+          if (performance.now() - start > durationMs) return;
+          const el = document.createElement('div');
+          el.className = 'p';
+          const spread = 90;
+          const pos = center + (Math.random()*spread - spread/2);
+          el.style.left = pos + 'px';
+          const size = 14 + Math.random()*22;
+          el.style.width = size + 'px';
+          el.style.height = size + 'px';
+          el.style.setProperty('--dur', (1.6 + Math.random()*0.8) + 's');
+          particles.appendChild(el);
+          setTimeout(spawn, 40 + Math.random()*70);
+        }
+        spawn();
+      }
+
+      function flash(){
+        const f = document.createElement('div');
+        f.className = 'flash';
+        stage.appendChild(f);
+        f.addEventListener('animationend', ()=> f.remove(), { once:true });
+      }
+
+      function next(){
+        idx = (idx + 1) % frames.length;
+        showFrame(idx);
+      }
+
+      function start(){
+        stop();
+        idx = 0;
+        showFrame(idx);
+        // use RAF to improve start reliability on iOS
+        requestAnimationFrame(()=> {
+          timer = setInterval(next, STEP_MS);
+        });
+      }
+
+      function stop(){ if (timer){ clearInterval(timer); timer = null; } }
+
+      window.addEventListener('load', start, { once:true });
+      replayBtn.addEventListener('click', start, { passive:true });
+    })();
+  </script>
+</body>
+</html>
